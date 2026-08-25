@@ -1,0 +1,26 @@
+{
+  "name": "reya-trading",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "packageManager": "pnpm@11.19.0",
+  "scripts": {
+    "dev": "concurrently -n api,web -c cyan,green \"pnpm --filter @reya/api dev\" \"pnpm --filter @reya/web dev\"",
+    "dev:api": "pnpm --filter @reya/api dev",
+    "dev:web": "pnpm --filter @reya/web dev",
+    "build": "pnpm --filter @reya/shared build && pnpm --filter @reya/api build && pnpm --filter @reya/web build",
+    "typecheck": "pnpm --filter @reya/shared typecheck && pnpm --filter @reya/api typecheck && pnpm --filter @reya/web typecheck",
+    "test": "pnpm --filter @reya/shared test && pnpm --filter @reya/api test",
+    "db:generate": "pnpm --filter @reya/api prisma generate --schema ../../prisma/schema.prisma",
+    "db:migrate": "pnpm --filter @reya/api prisma migrate dev --schema ../../prisma/schema.prisma",
+    "db:seed": "pnpm --filter @reya/api prisma db seed --schema ../../prisma/schema.prisma"
+  },
+  "devDependencies": {
+    "concurrently": "^9.2.1",
+    "prisma": "6.19.3",
+    "typescript": "^5.9.2"
+  },
+  "dependencies": {
+    "@prisma/client": "6.19.3"
+  }
+}

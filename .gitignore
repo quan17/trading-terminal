@@ -1,0 +1,15 @@
+node_modules
+.next
+.next.bak-*
+dist
+coverage
+.env
+.env.local
+.postgres-data
+.DS_Store
+.playwright-cli
+output
+*.tsbuildinfo
+playwright-report
+test-results
+prisma/migrations/dev.db

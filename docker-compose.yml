@@ -1,0 +1,21 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: reya-trading-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: reya_trading
+      POSTGRES_USER: reya
+      POSTGRES_PASSWORD: reya
+    ports:
+      - "5432:5432"
+    volumes:
+      - reya-trading-postgres:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U reya -d reya_trading"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+volumes:
+  reya-trading-postgres:

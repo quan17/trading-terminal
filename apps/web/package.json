@@ -1,0 +1,38 @@
+{
+  "name": "@reya/web",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "next dev -p ${WEB_PORT:-3000}",
+    "build": "next build",
+    "start": "next start -p ${WEB_PORT:-3000}",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "lint": "next lint"
+  },
+  "dependencies": {
+    "@hookform/resolvers": "^5.2.1",
+    "@reya/shared": "workspace:*",
+    "@tanstack/react-query": "^5.85.5",
+    "ag-grid-community": "^35.0.0",
+    "ag-grid-react": "^35.0.0",
+    "clsx": "^2.1.1",
+    "golden-layout": "^2.6.0",
+    "lightweight-charts": "^4.2.3",
+    "lucide-react": "^0.541.0",
+    "next": "^15.5.2",
+    "react": "^19.1.1",
+    "react-dom": "^19.1.1",
+    "react-hook-form": "^7.62.0",
+    "zod": "^4.1.5",
+    "zustand": "^5.0.8"
+  },
+  "devDependencies": {
+    "@types/node": "^24.3.0",
+    "@types/react": "^19.1.12",
+    "@types/react-dom": "^19.1.9",
+    "eslint": "^9.34.0",
+    "eslint-config-next": "^15.5.2",
+    "typescript": "^5.9.2"
+  }
+}

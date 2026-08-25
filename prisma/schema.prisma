@@ -1,0 +1,118 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum OrderSide {
+  BUY
+  SELL
+}
+
+enum OrderType {
+  MARKET
+  LIMIT
+}
+
+enum OrderStatus {
+  OPEN
+  FILLED
+  CANCELED
+  REJECTED
+}
+
+model Market {
+  id            String     @id @default(cuid())
+  symbol        String     @unique
+  baseAsset     String
+  quoteAsset    String
+  tickSize      Decimal    @db.Decimal(18, 8)
+  quantityStep  Decimal    @db.Decimal(18, 8)
+  minOrderSize  Decimal    @db.Decimal(18, 8)
+  createdAt     DateTime   @default(now())
+  orders        Order[]
+  trades        Trade[]
+  positions     Position[]
+}
+
+model Account {
+  id            String          @id @default(cuid())
+  name          String
+  cashBalance   Decimal         @db.Decimal(24, 8)
+  createdAt     DateTime        @default(now())
+  updatedAt     DateTime        @updatedAt
+  orders        Order[]
+  trades        Trade[]
+  positions     Position[]
+  balanceLedger BalanceLedger[]
+}
+
+model Order {
+  id             String      @id @default(cuid())
+  clientOrderId  String      @unique
+  accountId      String
+  marketId       String
+  side           OrderSide
+  type           OrderType
+  status         OrderStatus @default(OPEN)
+  price          Decimal?    @db.Decimal(24, 8)
+  quantity       Decimal     @db.Decimal(24, 8)
+  filledQuantity Decimal     @default(0) @db.Decimal(24, 8)
+  avgFillPrice   Decimal?    @db.Decimal(24, 8)
+  rejectReason   String?
+  createdAt      DateTime    @default(now())
+  updatedAt      DateTime    @updatedAt
+  account        Account     @relation(fields: [accountId], references: [id])
+  market         Market      @relation(fields: [marketId], references: [id])
+  trades         Trade[]
+
+  @@index([accountId, status])
+  @@index([marketId, createdAt])
+}
+
+model Trade {
+  id        String    @id @default(cuid())
+  orderId   String
+  accountId String
+  marketId  String
+  side      OrderSide
+  price     Decimal   @db.Decimal(24, 8)
+  quantity  Decimal   @db.Decimal(24, 8)
+  fee       Decimal   @db.Decimal(24, 8)
+  createdAt DateTime  @default(now())
+  order     Order     @relation(fields: [orderId], references: [id])
+  account   Account   @relation(fields: [accountId], references: [id])
+  market    Market    @relation(fields: [marketId], references: [id])
+
+  @@index([accountId, createdAt])
+  @@index([marketId, createdAt])
+}
+
+model Position {
+  id            String   @id @default(cuid())
+  accountId     String
+  marketId      String
+  quantity      Decimal  @default(0) @db.Decimal(24, 8)
+  avgEntryPrice Decimal  @default(0) @db.Decimal(24, 8)
+  realizedPnl   Decimal  @default(0) @db.Decimal(24, 8)
+  updatedAt     DateTime @updatedAt
+  account       Account  @relation(fields: [accountId], references: [id])
+  market        Market   @relation(fields: [marketId], references: [id])
+
+  @@unique([accountId, marketId])
+}
+
+model BalanceLedger {
+  id        String   @id @default(cuid())
+  accountId String
+  delta     Decimal  @db.Decimal(24, 8)
+  reason    String
+  refId     String?
+  createdAt DateTime @default(now())
+  account   Account  @relation(fields: [accountId], references: [id])
+
+  @@index([accountId, createdAt])
+}
